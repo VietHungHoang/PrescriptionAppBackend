@@ -1,0 +1,89 @@
+@startuml gdsg
+' Set title
+title f
+
+' Define Actors
+actor Guest as "Khách vãng lai"
+actor RegisteredCustomer as "Khách hàng ĐK" #Blue
+actor Admin as "Quản trị viên" #Green
+actor PaymentGateway as "Cổng Thanh toán\n(External)" <<System>> #Orange
+actor ShippingProvider as "ĐV Vận chuyển\n(External)" <<System>> #Purple
+
+' Define System Boundary
+rectangle "Hệ thống E-commerce" {
+  ' Use Cases for Browsing/Searching (Guest + Registered)
+  usecase UC_ViewProducts as "Xem Sản phẩm\n(Danh mục, DS, Chi tiết)"
+  usecase UC_SearchProducts as "Tìm kiếm Sản phẩm"
+  usecase UC_ViewReviews as "Xem Đánh giá/Bình luận"
+
+  ' Use Cases for Cart (Guest + Registered)
+  usecase UC_ManageCart as "Quản lý Giỏ hàng\n(Thêm, Xem, Sửa, Xóa)"
+
+  ' Use Cases for Account (Guest initiation, Registered usage)
+  usecase UC_Register as "Đăng ký Tài khoản"
+  usecase UC_Login as "Đăng nhập"
+  usecase UC_ManageProfile as "Quản lý Hồ sơ\n(Thông tin, Địa chỉ)" #Blue
+
+  ' Use Cases for Ordering/Payment (Registered only)
+  usecase UC_Checkout as "Tiến hành Thanh toán" #Blue
+  usecase UC_PlaceOrder as "Đặt hàng" #Blue
+  usecase UC_ViewOrderHistory as "Xem Lịch sử Đơn hàng" #Blue
+  usecase UC_MakePayment as "Thực hiện Thanh toán" #Blue
+  usecase UC_TrackShipment as "Theo dõi Vận chuyển" #Blue
+  usecase UC_WriteReview as "Viết Đánh giá/Bình luận" #Blue
+
+  ' Use Cases for Administrator
+  usecase UC_ManageUsers as "Quản lý Người dùng" #Green
+  usecase UC_ManageProducts as "Quản lý Sản phẩm" #Green
+  usecase UC_ManageOrders as "Quản lý Đơn hàng" #Green
+  usecase UC_ManagePayments as "Quản lý Thanh toán" #Green
+  usecase UC_ManageShipments as "Quản lý Vận chuyển" #Green
+  usecase UC_ManageComments as "Quản lý Bình luận" #Green
+  usecase UC_ViewReports as "Xem Báo cáo" #Green
+  usecase UC_ConfigureSystem as "Cấu hình Hệ thống" #Green
+}
+
+' --- Actor Relationships to Use Cases ---
+
+' Guest Actions
+Guest -- UC_ViewProducts
+Guest -- UC_SearchProducts
+Guest -- UC_ManageCart
+Guest -- UC_ViewReviews
+Guest -- UC_Register
+Guest -- UC_Login
+
+' RegisteredCustomer Actions (inherits Guest + adds more)
+RegisteredCustomer --|> Guest ' Kế thừa Guest
+RegisteredCustomer -- UC_ManageProfile
+RegisteredCustomer -- UC_Checkout
+RegisteredCustomer -- UC_PlaceOrder ' Checkout often leads to Place Order
+RegisteredCustomer -- UC_ViewOrderHistory
+RegisteredCustomer -- UC_MakePayment ' Placing order involves payment
+RegisteredCustomer -- UC_TrackShipment ' Can track after order shipped
+RegisteredCustomer -- UC_WriteReview
+
+' Admin Actions
+Admin -- UC_ManageUsers
+Admin -- UC_ManageProducts
+Admin -- UC_ManageOrders
+Admin -- UC_ManagePayments
+Admin -- UC_ManageShipments
+Admin -- UC_ManageComments
+Admin -- UC_ViewReports
+Admin -- UC_ConfigureSystem
+
+' --- System Interaction with External Actors ---
+' Using arrows pointing FROM the use case TO the external actor
+
+UC_MakePayment --> PaymentGateway : Gửi yêu cầu TT
+PaymentGateway --> UC_MakePayment : Trả kết quả TT
+
+UC_ManagePayments --> PaymentGateway : Xác minh/Hoàn tiền
+
+UC_PlaceOrder --> ShippingProvider : Gửi yêu cầu VC (ngầm)
+UC_ManageShipments --> ShippingProvider : Yêu cầu/Cập nhật TT VC
+ShippingProvider --> UC_TrackShipment : Cung cấp TT Tracking
+ShippingProvider --> UC_ManageShipments : Cập nhật trạng thái VC
+
+@enduml

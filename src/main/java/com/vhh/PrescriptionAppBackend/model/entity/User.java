@@ -1,10 +1,12 @@
-package com.vhh.PrescriptionAppBackend.model;
+package com.vhh.PrescriptionAppBackend.model.entity;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.springframework.cglib.core.Local;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,23 +41,30 @@ public class User extends BaseEntity implements UserDetails {
     private String email;
 
     @Column(nullable = false)
-    private String fullName;
+    private String name;
 
-    @Column(nullable = false)
     private String password;
 
+    private String gender;
+
+    private String phoneNumber;
+
     @Column(name = "date_of_birth")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @Column(name = "facebook_account_id")
-    private Integer facebookAccountId;
+    private String facebookAccountId;
 
     @Column(name = "google_account_id")
-    private Integer googleAccountId;
+    private String googleAccountId;
 
     @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
+
+    @ManyToOne
+    @JoinColumn(name = "country_id")
+    private Country country;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

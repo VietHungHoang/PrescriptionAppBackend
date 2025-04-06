@@ -1,4 +1,4 @@
-package com.vhh.PrescriptionAppBackend.model;
+package com.vhh.PrescriptionAppBackend.model.entity;
 
 import java.time.LocalDateTime;
 

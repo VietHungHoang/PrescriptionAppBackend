@@ -1,0 +1,166 @@
+@startuml f
+' --- Settings ---
+' skinparam linetype ortho
+' skinparam linetype polyline
+skinparam classAttributeIconSize 0
+hide empty members
+left to right direction
+
+' --- Enums ---
+enum LoaiTaiKhoan {
+  NGUOI_DUNG
+  BAC_SI
+}
+
+enum TanSuat {
+   HANG_NGAY
+   CACH_NGAY
+   HANG_TUAN
+   KHAC
+}
+
+enum TrangThaiUongThuoc {
+   CHUA_UONG
+   DA_UONG
+   UONG_MUON
+   BO_LO
+}
+
+enum TrangThaiLichHen {
+   CHO_XAC_NHAN
+   DA_XAC_NHAN
+   DA_HUY
+   HOAN_THANH
+}
+
+' --- Classes ---
+abstract class TaiKhoan {
+  + id : String
+  + hoTen : String
+  + email : String
+  + soDienThoai : String
+  # matKhau : String <<hashed>>
+  + loaiTaiKhoan : LoaiTaiKhoan
+  + dangNhap() : boolean
+  + dangXuat() : void
+  + capNhatThongTinCaNhan() : boolean
+  + doiMatKhau() : boolean
+}
+
+class NguoiDung {
+  + themDonThuoc(donThuoc : DonThuoc) : boolean
+  + xemDanhSachDonThuoc() : List<DonThuoc>
+  + xemChiTietDonThuoc(donThuocId : String) : DonThuoc
+  + ghiNhanUongThuoc(banGhiId : String, trangThai : TrangThaiUongThuoc, thoiGianThucTe : DateTime) : boolean
+  + xemThongKeUongThuoc(donThuocId : String) : Map<ThuocTrongDon, List<BanGhiUongThuoc>>
+  + timKiemBacSi(keyword : String) : List<BacSi>
+  + datLichHen(bacSiId : String, thoiGian : DateTime, lyDo : String) : LichHen
+  + xemLichHenCuaToi() : List<LichHen>
+  + huyLichHen(lichHenId : String) : boolean
+  + xemThongTinThuoc(thuocId : String) : ThongTinThuoc
+}
+
+class BacSi {
+  + chuyenKhoa : String
+  + kinhNghiem : String
+  + diaChiPhongKham : String
+  + thongTinKhac : String
+  + xemDanhSachLichHen() : List<LichHen>
+  + xacNhanLichHen(lichHenId : String) : boolean
+  + huyLichHen(lichHenId : String) : boolean
+  + keDonThuoc(nguoiDungId : String, lichHenId : String, chiTietDon : Map<ThongTinThuoc, ThuocTrongDon>) : DonThuoc
+  + xemThongTinThuoc(thuocId : String) : ThongTinThuoc
+}
+
+class DonThuoc {
+  + id : String
+  + tenDonThuoc : String
+  + ngayKeDon : Date
+  + tenPhongKham : String
+  + ghiChuChung : String
+  ' + bacSiKeDon : BacSi <<FK>> ' Có thể liên kết trực tiếp
+  ' + nguoiDung : NguoiDung <<FK>> ' Có thể liên kết trực tiếp
+  + layDanhSachThuocTrongDon() : List<ThuocTrongDon>
+  + layThongKeUongThuoc() : Map<String, Map<TrangThaiUongThuoc, Integer>> ' Thống kê theo tên thuốc hoặc id thuốc
+}
+
+class ThuocTrongDon {
+  ' + id : String ' Có thể không cần nếu là composition
+  + donVi : String ' viên, ống, ml...
+  + soLuongTong : Integer <<Optional>>
+  + ghiChuRieng : String
+  + layDanhSachLichUong() : List<LichUongCuThe>
+}
+
+class LichUongCuThe {
+  ' + id : String ' Có thể không cần nếu là composition
+  + thoiGianUong : Time ' Ví dụ: "08:00", "20:00"
+  + soLuongMoiLan : Float
+  + tanSuat : TanSuat ' hoặc String mô tả chi tiết hơn
+}
+
+class BanGhiUongThuoc {
+  + id : String
+  + ngayGioDuKienUong : DateTime
+  + ngayGioUongThucTe : DateTime <<Nullable>>
+  + trangThai : TrangThaiUongThuoc
+  + ghiChu : String
+}
+
+class ThongTinThuoc {
+  + id : String
+  + tenThuoc : String
+  + hoatChat : String
+  + dangBaoChe : String
+  + hamLuong : String
+  + nhaSanXuat : String
+  + huongDanSuDung : String
+  + chongChiDinh : String
+  + tacDungPhu : String
+  + anhMinhHoaUrl : String
+}
+
+class LichHen {
+  + id : String
+  + thoiGianHen : DateTime
+  + diaDiem : String <<Optional>>
+  + lyDoKham : String
+  + trangThai : TrangThaiLichHen
+  + ghiChu : String
+  ' + nguoiDung : NguoiDung <<FK>>
+  ' + bacSi : BacSi <<FK>>
+  + xacNhan() : boolean
+  + huyHen() : boolean
+  + capNhatTrangThai(trangThaiMoi : TrangThaiLichHen) : boolean
+}
+
+' --- Relationships ---
+TaiKhoan <|-- NguoiDung
+TaiKhoan <|-- BacSi
+
+NguoiDung "1" -- "0..*" DonThuoc : Sở hữu >
+BacSi "1" -- "0..*" DonThuoc : Kê đơn >
+' DonThuoc "1" -- "1" NguoiDung : Thuộc về <
+' DonThuoc "1" -- "1" BacSi : Được kê bởi <
+
+NguoiDung "1" -- "0..*" LichHen : Đặt >
+BacSi "1" -- "0..*" LichHen : Quản lý <
+' LichHen "1" -- "1" NguoiDung : Của bệnh nhân <
+' LichHen "1" -- "1" BacSi : Với bác sĩ <
+
+DonThuoc "1" *-- "1..*" ThuocTrongDon : Bao gồm
+ThuocTrongDon "1" *-- "1..*" LichUongCuThe : Có lịch uống
+ThuocTrongDon "1" --> "1" ThongTinThuoc : Tham chiếu thông tin
+
+LichUongCuThe "1" ..> "0..*" BanGhiUongThuoc : Tạo bản ghi uống thuốc >
+NguoiDung "1" -- "0..*" BanGhiUongThuoc : Ghi nhận >
+' BanGhiUongThuoc "1" -- "1" NguoiDung : Của >
+' BanGhiUongThuoc "1" -- "1" LichUongCuThe : Theo lịch <
+
+LichHen "0..1" -- "0..1" DonThuoc : Có thể dẫn đến kê >
+
+' Người dùng và Bác sĩ đều có thể xem thông tin thuốc
+NguoiDung ..> ThongTinThuoc : Xem
+BacSi ..> ThongTinThuoc : Xem
+
+@enduml

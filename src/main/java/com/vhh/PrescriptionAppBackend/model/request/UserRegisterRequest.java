@@ -1,6 +1,7 @@
 package com.vhh.PrescriptionAppBackend.model.request;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,8 +16,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserRegisterRequest {
 
-    @JsonProperty("fullname")
-    private String fullName;
+    @JsonProperty("name")
+    private String name;
 
     @NotBlank(message = "Email is required")
     private String email;
@@ -28,13 +29,13 @@ public class UserRegisterRequest {
     private String retypePassword;
 
     @JsonProperty("date_of_birth")
-    private Date dateOfBirth;
+    private LocalDate dateOfBirth;
 
     @JsonProperty("facebook_account_id")
-    private Integer facebookAccountId;
+    private String facebookAccountId;
 
     @JsonProperty("google_account_id")
-    private Integer googleAccountId;
+    private String googleAccountId;
 
     @JsonProperty("role_id")
     @NotNull(message = "Role id is required")

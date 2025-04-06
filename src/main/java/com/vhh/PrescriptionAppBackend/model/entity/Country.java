@@ -1,4 +1,4 @@
-package com.vhh.PrescriptionAppBackend.model;
+package com.vhh.PrescriptionAppBackend.model.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,11 +11,11 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "countries")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Role {
+public class Country {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,8 +23,6 @@ public class Role {
     @Column(nullable = false)
     private String name;
 
-    public static String DOCTOR = "DOCTOR";
-    public static String USER = "USER";
-
-
+    @Column(nullable = false)
+    private String code;
 }

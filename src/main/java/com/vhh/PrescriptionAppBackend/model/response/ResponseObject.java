@@ -14,6 +14,5 @@ import lombok.NoArgsConstructor;
 public class ResponseObject<T> {
     private String message;
     private HttpStatus status;
-
     private T data;
 }
