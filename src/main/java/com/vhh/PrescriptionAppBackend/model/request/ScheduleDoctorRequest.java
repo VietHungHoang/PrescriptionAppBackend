@@ -1,5 +1,6 @@
 package com.vhh.PrescriptionAppBackend.model.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -24,18 +25,24 @@ public class ScheduleDoctorRequest {
     private String description;
 
     @NotNull(message = "Start date is required")
+
+
     @JsonProperty("start_date")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     private LocalDate startDate;
 
     @NotNull(message = "Start time is required")
+    @JsonFormat(pattern = "HH:mm")
     @JsonProperty("start_time")
     private LocalTime startTime;
 
     @NotNull(message = "End date is required")
+    @JsonFormat(pattern = "dd/MM/yyyy")
     @JsonProperty("end_date")
     private LocalDate endDate;
 
     @NotNull(message = "End time is required")
+    @JsonFormat(pattern = "HH:mm")
     @JsonProperty("end_time")
     private LocalTime endTime;
 

@@ -21,7 +21,6 @@ public class ScheduleDoctorController {
     // Lấy tất cả lịch hẹn
     @GetMapping
     public ResponseEntity<List<ScheduleDoctorResponse>> getAll() {
-        // Service đã trả về List<ScheduleDoctorResponse> rồi
         List<ScheduleDoctorResponse> scheduleResponses = service.getAllSchedules();
         return ResponseEntity.ok(scheduleResponses);
     }

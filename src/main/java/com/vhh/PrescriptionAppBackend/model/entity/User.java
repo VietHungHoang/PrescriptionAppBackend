@@ -73,6 +73,9 @@ public class User extends BaseEntity implements UserDetails {
         return authorities;
     }
 
+    @ManyToOne
+    @JoinColumn(name = "schedule_id")
+    private ScheduleDoctor scheduleDoctor;
     @Override
     public String getUsername() {
         return this.email;

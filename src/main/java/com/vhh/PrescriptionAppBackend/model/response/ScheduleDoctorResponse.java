@@ -1,5 +1,6 @@
 package com.vhh.PrescriptionAppBackend.model.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vhh.PrescriptionAppBackend.model.entity.ScheduleDoctor;
 import lombok.AllArgsConstructor;
@@ -25,15 +26,19 @@ public class ScheduleDoctorResponse {
     @JsonProperty("description")
     private String description;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
     @JsonProperty("start_date")
     private LocalDate startDate;
 
+    @JsonFormat(pattern = "HH:mm")
     @JsonProperty("start_time")
     private LocalTime startTime;
 
+    @JsonFormat(pattern = "dd/MM/yyyy")
     @JsonProperty("end_date")
     private LocalDate endDate;
 
+    @JsonFormat(pattern = "HH:mm")
     @JsonProperty("end_time")
     private LocalTime endTime;
 

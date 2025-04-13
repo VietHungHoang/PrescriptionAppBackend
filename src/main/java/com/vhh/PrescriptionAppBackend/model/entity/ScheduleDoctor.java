@@ -19,7 +19,7 @@ public class ScheduleDoctor extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(nullable = false)
+    @Column(name = "schedule_id", nullable = false)
     private String title;
     private String description;
 
