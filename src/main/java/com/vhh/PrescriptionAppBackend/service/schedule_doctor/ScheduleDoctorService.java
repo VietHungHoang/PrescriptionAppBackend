@@ -33,15 +33,24 @@ public class ScheduleDoctorService {
 
     // Tạo lịch hẹn mới và chuyển đổi thành DTO
     public ScheduleDoctorResponse createSchedule(ScheduleDoctorRequest request) {
+        // Khởi tạo đối tượng ScheduleDoctor
         ScheduleDoctor schedule = new ScheduleDoctor();
+
+        // Gán các giá trị từ ScheduleDoctorRequest vào đối tượng ScheduleDoctor
         schedule.setTitle(request.getTitle());
         schedule.setDescription(request.getDescription());
         schedule.setStartTime(request.getStartTime());
         schedule.setEndTime(request.getEndTime());
+        schedule.setStartDate(request.getStartDate());  // Gán startDate
+        schedule.setEndDate(request.getEndDate());      // Gán endDate
 
+        // Lưu đối tượng ScheduleDoctor vào cơ sở dữ liệu
         ScheduleDoctor savedSchedule = repository.save(schedule);
+
+        // Trả về phản hồi dưới dạng ScheduleDoctorResponse
         return ScheduleDoctorResponse.fromScheduleDoctor(savedSchedule);
     }
+
 
     // Cập nhật lịch hẹn và trả về DTO
     public ScheduleDoctorResponse updateSchedule(Long id, ScheduleDoctorRequest updatedRequest) {
