@@ -66,6 +66,8 @@ public class User extends BaseEntity implements UserDetails {
     @JoinColumn(name = "country_id")
     private Country country;
 
+    private String photoUrl;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
@@ -76,5 +78,12 @@ public class User extends BaseEntity implements UserDetails {
     @Override
     public String getUsername() {
         return this.email;
+    }
+
+    public User(String googleAccountId, String email, String name, String photoUrl) {
+        this.googleAccountId = googleAccountId;
+        this.email = email;
+        this.name = name;
+        this.photoUrl = photoUrl;
     }
 }

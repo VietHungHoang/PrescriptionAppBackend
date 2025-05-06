@@ -55,11 +55,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class DrugController {
 	private final IDrugService drugService;
-	
 
 	@GetMapping("/simple")
-		public List<DrugNameResponse> getSimpleDrugs() {
-			return this.drugService.findAllSimple();
+		public ResponseEntity<ResponseObject<List<DrugNameResponse>>> getSimpleDrugs() {
+			List<DrugNameResponse> drugs = this.drugService.findAllSimple();
+			return ResponseEntity.ok().body(ResponseObject.<List<DrugNameResponse>>builder()
+				.message("Lấy danh sách quốc gia thành công")
+				.data(drugs)
+				.status(HttpStatus.OK)
+				.build());
 		}
 
 	@PostMapping("/import")
