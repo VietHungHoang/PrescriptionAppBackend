@@ -46,9 +46,6 @@ public class DrugInPrescription extends BaseEntity{
 
     private LocalDate startDate;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
-
     @OneToMany(mappedBy = "drugInPrescription", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TimeDosage> timeDosages = new ArrayList<>();
 
