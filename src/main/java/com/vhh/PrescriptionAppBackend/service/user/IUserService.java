@@ -8,9 +8,8 @@ import com.vhh.PrescriptionAppBackend.model.request.UserLoginRequest;
 import com.vhh.PrescriptionAppBackend.model.request.UserRegisterRequest;
 
 public interface IUserService {
-   User createUser(CustomerRegisterGoogleRequest userDTO) throws Exception;
-   User createUser(UserRegisterRequest userDTO) throws Exception;
-
+    User createUser(CustomerRegisterGoogleRequest userDTO) throws Exception;
+    User createUser(UserRegisterRequest userDTO) throws Exception;
 
     String login(UserLoginRequest userDTO) throws Exception;
     String login(CustomerRegisterGoogleRequest userDTO) throws Exception;
@@ -20,4 +19,6 @@ public interface IUserService {
     User getUserDetailFromToken(String token) throws Exception;
 
     Optional<User> findByEmail(String email) throws Exception;
+
+    User updateUser(User user) throws Exception;  // Thêm phương thức mới
 }

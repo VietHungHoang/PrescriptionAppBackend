@@ -1,7 +1,6 @@
 package com.vhh.PrescriptionAppBackend.model.response;
 
 import java.time.LocalDate;
-import java.util.Date;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vhh.PrescriptionAppBackend.model.entity.Role;
@@ -38,6 +37,18 @@ public class UserResponse {
     @JsonProperty("role")
     private Role role;
 
+    @JsonProperty("gender")
+    private String gender;
+
+    @JsonProperty("phone_number")
+    private String phoneNumber;
+
+    @JsonProperty("weight")
+    private Double weight;
+
+    @JsonProperty("height")
+    private Double height;
+
     public static UserResponse fromUser(User user) {
         return UserResponse.builder()
                 .id(user.getId())
@@ -47,6 +58,10 @@ public class UserResponse {
                 .facebookAccountId(user.getFacebookAccountId())
                 .googleAccountId(user.getGoogleAccountId())
                 .role(user.getRole())
+                .gender(user.getGender())
+                .phoneNumber(user.getPhoneNumber())
+                .weight(user.getUserSetting() != null ? user.getUserSetting().getWeight() : null)
+                .height(user.getUserSetting() != null ? user.getUserSetting().getHeight() : null)
                 .build();
     }
 }
