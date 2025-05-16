@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 
 import com.vhh.PrescriptionAppBackend.model.entity.Drug;
 import com.vhh.PrescriptionAppBackend.model.response.DrugNameResponse;
+import com.vhh.PrescriptionAppBackend.model.response.UnitResponse;
 import com.vhh.PrescriptionAppBackend.repository.DrugRepository;
 
 import lombok.RequiredArgsConstructor;

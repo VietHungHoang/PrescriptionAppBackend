@@ -26,10 +26,14 @@ public class Schedule extends BaseEntity{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private LocalDate date;
+    private LocalDateTime date;
     private Boolean status;
 
     @ManyToOne
     @JoinColumn(name="drug_in_pres_id")
     DrugInPrescription drugInPrescription;
+
+    @ManyToOne
+    @JoinColumn(name="time_dosage_id")
+    Dosage timeDosage;
 }
