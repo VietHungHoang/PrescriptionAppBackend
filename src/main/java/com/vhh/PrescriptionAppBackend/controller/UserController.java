@@ -171,7 +171,14 @@ public class UserController {
 				String name = (String) payload.get("name");
 				// log.info("Google user not found, registration required for email: {}",
 				// email);
-				return ResponseEntity.ok(GoogleAuthResponse.registrationRequired(email, name, googleId));
+				CustomerRegisterGoogleRequest userDTO = CustomerRegisterGoogleRequest.builder().email(email).name(name).googleAccountId(googleId).build()
+
+				User newUser = userService.createUser(userDTO);
+						String token = userService.login(userDTO);
+						User user = userService.getUserDetailFromToken(token);
+						Token jwtToken = tokenService.addToken(user, token);
+						return ResponseEntity.ok(GoogleAuthResponse.registerSuccess(token, jwtToken.getRefreshToken()));
+
 			}
 
 		} catch (Exception e) {
@@ -184,6 +191,18 @@ public class UserController {
 			}
 		}
 	}
+
+	
+		@GetMapping("/check-token")
+		public ResponseEntity<ResponseObject<Void>> checkToken() {
+			// Nếu token hợp lệ thì trả về 200 và message success
+			ResponseObject<Void> response = new ResponseObject<>();
+			response.setStatus(HttpStatus.OK);
+			response.setMessage("Token is valid");
+			response.setData(null);
+			return ResponseEntity.ok(response);
+		}
+
 
 	// public ResponseEntity<?> loginWithGoogle(@Valid @RequestBody
 	// GoogleLoginRequest loginRequest) {

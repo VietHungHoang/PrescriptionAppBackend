@@ -22,12 +22,21 @@ public class GoogleAuthResponse {
 
     private String status;
     private String token;
+    private String refreshToken;
 
     // Static factory methods for convenience
     public static GoogleAuthResponse loginSuccess(String token) {
         GoogleAuthResponse res = new GoogleAuthResponse();
         res.setStatus("LOGIN_SUCCESS");
         res.setToken(token);
+        return res;
+    }
+
+        public static GoogleAuthResponse registerSuccess(String token, String refreshToken) {
+        GoogleAuthResponse res = new GoogleAuthResponse();
+        res.setStatus("LOGIN_SUCCESS");
+        res.setToken(token);
+        res.setRefreshToken(refreshToken);
         return res;
     }
 

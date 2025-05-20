@@ -3,7 +3,7 @@ package com.vhh.PrescriptionAppBackend.model.entity;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import com.google.auto.value.AutoValue.Builder;
+import com.vhh.PrescriptionAppBackend.model.request.ScheduleRequest;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -36,4 +37,10 @@ public class Schedule extends BaseEntity{
     @ManyToOne
     @JoinColumn(name="time_dosage_id")
     Dosage timeDosage;
+
+    public static Schedule responseToEntity(ScheduleRequest scheduleRequest) {
+        return Schedule.builder()
+            // .date(scheduleRequest.getDate().toString())
+            .build();
+    }
 }
