@@ -22,5 +22,5 @@ public class DrugInPresRequest {
     @JsonProperty("start_date")
     private String startDate;
     private String note;
-    private List<ScheduleRequest> schedules;
+    private List<ScheduleAddRequest> schedules;
 }

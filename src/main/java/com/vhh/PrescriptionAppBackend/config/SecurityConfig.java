@@ -25,7 +25,7 @@ public class SecurityConfig {
     public UserDetailsService userDetailsService() {
         return email -> userRepository
                 .findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("Cannot find user name with email= " + email));
+                .orElseThrow(() -> new UsernameNotFoundException("Cannot find user with email= " + email));
     }
 
     @Bean
@@ -46,16 +46,5 @@ public class SecurityConfig {
         return config.getAuthenticationManager();
     }
 
-    // @Bean
-    // public CommandLineRunner printFilters(HttpSecurity http) throws Exception {
-    //     return args -> {
-    //         for (SecurityFilterChain filter : http.getSharedObject(FilterChainProxy.class).getFilterChains()) {
-    //             System.out.println("🔍 Security Filters:");
-    //             for (Filter f : filter.getFilters()) {
-    //                 System.out.println(f.getClass().getSimpleName());
-    //             }
-    //         }
-    //     };
-    // }
 
 }

@@ -1,7 +1,5 @@
 package com.vhh.PrescriptionAppBackend.model.entity;
 
-import java.time.LocalTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;

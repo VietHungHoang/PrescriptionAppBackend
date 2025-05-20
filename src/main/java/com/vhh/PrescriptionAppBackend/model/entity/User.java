@@ -62,6 +62,10 @@ public class User extends BaseEntity implements UserDetails {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private UserSetting userSetting;  // Thêm quan hệ với UserSetting
 
+    // Thêm mối quan hệ với Prescription (Một User có thể có nhiều Prescription)
+    @OneToMany(mappedBy = "user")
+    private List<Prescription> prescriptions;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();

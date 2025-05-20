@@ -1,18 +1,26 @@
 package com.vhh.PrescriptionAppBackend.model.request;
-import java.time.LocalDateTime;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
-@AllArgsConstructor
+import java.util.Date;
+
 @Data
-@Builder
 public class ScheduleRequest {
-    private String date;
-    private Double dosage;
+    private Date date;
+    private Long userId;
+    public Date getDate() {
+        return date;
+    }
+
+    public void setDate(Date date) {
+        this.date = date;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
 }
