@@ -1,15 +1,15 @@
 package com.vhh.PrescriptionAppBackend.mapper;
 
+import com.vhh.PrescriptionAppBackend.model.request.UserRegisterRequest;
 import org.modelmapper.ModelMapper;
 
 import com.vhh.PrescriptionAppBackend.model.entity.User;
 import com.vhh.PrescriptionAppBackend.model.request.CustomerRegisterGoogleRequest;
-import com.vhh.PrescriptionAppBackend.model.request.UserLoginRequest;
 
 public class UserMapper {
     private static final ModelMapper modelMapper = new ModelMapper();
 
-    public static User convertToEntity(UserLoginRequest userLoginRequest) {
+    public static User convertToEntity(UserRegisterRequest userLoginRequest) {
         return modelMapper.map(userLoginRequest, User.class);
     }
 

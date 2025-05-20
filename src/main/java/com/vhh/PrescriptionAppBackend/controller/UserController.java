@@ -1,30 +1,21 @@
 package com.vhh.PrescriptionAppBackend.controller;
 
 import java.security.GeneralSecurityException;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import com.vhh.PrescriptionAppBackend.service.country.CountryService;
 import com.vhh.PrescriptionAppBackend.service.token.GoogleTokenVerifierService;
 import com.vhh.PrescriptionAppBackend.service.token.ITokenService;
 import com.vhh.PrescriptionAppBackend.service.user.IUserService;
+import com.vhh.PrescriptionAppBackend.service.usersetting.IUserSettingService;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.vhh.PrescriptionAppBackend.jwt.JwtUtils;
@@ -32,6 +23,7 @@ import com.vhh.PrescriptionAppBackend.mapper.CountryMapper;
 import com.vhh.PrescriptionAppBackend.model.entity.Country;
 import com.vhh.PrescriptionAppBackend.model.entity.Token;
 import com.vhh.PrescriptionAppBackend.model.entity.User;
+import com.vhh.PrescriptionAppBackend.model.entity.UserSetting;
 import com.vhh.PrescriptionAppBackend.model.request.CustomerRegisterGoogleRequest;
 import com.vhh.PrescriptionAppBackend.model.request.GoogleLoginRequest;
 import com.vhh.PrescriptionAppBackend.model.request.UserLoginRequest;
@@ -54,12 +46,12 @@ public class UserController {
 	private final ITokenService tokenService;
 	private final CountryService countryService;
 	private final JwtUtils jwtUtils;
-	private final GoogleTokenVerifierService googleTokenVerifierSercvService;
+	private final GoogleTokenVerifierService googleTokenVerifierService;
+	private final IUserSettingService userSettingService;
 
 	@PostMapping("/register")
 	public ResponseEntity<ResponseObject<UserResponse>> createUser(@Valid @RequestBody UserRegisterRequest userDTO,
-			BindingResult result)
-			throws Exception {
+																   BindingResult result) throws Exception {
 		if (result.hasErrors()) {
 			List<String> errorMessages = result.getFieldErrors()
 					.stream()
@@ -90,8 +82,7 @@ public class UserController {
 
 	@PostMapping("/register/google")
 	public ResponseEntity<ResponseObject<LoginResponse>> createUser(
-			@Valid @RequestBody CustomerRegisterGoogleRequest userDTO)
-			throws Exception {
+			@Valid @RequestBody CustomerRegisterGoogleRequest userDTO) throws Exception {
 		User newUser = userService.createUser(userDTO);
 		String token = userService.login(userDTO);
 		User user = userService.getUserDetailFromToken(token);
@@ -115,9 +106,7 @@ public class UserController {
 
 	@PostMapping("/login")
 	public ResponseEntity<ResponseObject<LoginResponse>> login(@Valid @RequestBody UserLoginRequest userDTO,
-			HttpServletRequest request)
-			throws Exception {
-
+															   HttpServletRequest request) throws Exception {
 		userDTO.setRoleId(userDTO.getRoleId() == null ? 1 : userDTO.getRoleId());
 		String token = userService.login(userDTO);
 		User user = userService.getUserDetailFromToken(token);
@@ -152,7 +141,7 @@ public class UserController {
 	@PostMapping("/google/verify")
 	public ResponseEntity<GoogleAuthResponse> verifyGoogleToken(@Valid @RequestBody GoogleLoginRequest request) {
 		try {
-			GoogleIdToken.Payload payload = googleTokenVerifierSercvService.verify(request.getIdToken());
+			GoogleIdToken.Payload payload = googleTokenVerifierService.verify(request.getIdToken());
 			String email = payload.getEmail();
 			String googleId = payload.getSubject(); // Google's unique ID
 
@@ -174,9 +163,8 @@ public class UserController {
 				}
 
 				String token = jwtUtils.generateToken(user);
-				GoogleAuthResponse res = GoogleAuthResponse.builder().name(user.getName()).token(token).status("LOGIN_SUCCESS").build();
 				// log.info("Google Login successful for user: {}", email);
-				return ResponseEntity.ok(res);
+				return ResponseEntity.ok(GoogleAuthResponse.loginSuccess(token));
 
 			} else {
 				// User does not exist - Registration Required Flow
@@ -339,4 +327,50 @@ public class UserController {
 	 * }
 	 */
 
+	@PutMapping("/{id}")
+	public ResponseEntity<ResponseObject<UserResponse>> updateUser(@PathVariable Long id, @RequestBody User user) {
+		try {
+			user.setId(id);
+			User updatedUser = userService.updateUser(user);
+			return ResponseEntity.ok(ResponseObject.<UserResponse>builder()
+					.status(HttpStatus.OK)
+					.data(UserResponse.fromUser(updatedUser))
+					.message("Cập nhật thông tin người dùng thành công")
+					.build());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseObject.<UserResponse>builder()
+					.status(HttpStatus.BAD_REQUEST)
+					.data(null)
+					.message(e.getMessage())
+					.build());
+		}
+	}
+
+	@GetMapping("/{id}/settings")
+	public ResponseEntity<ResponseObject<UserSetting>> getUserSetting(@PathVariable Long id) {
+		UserSetting userSetting = userSettingService.findByUserId(id);
+		if (userSetting == null) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseObject.<UserSetting>builder()
+					.status(HttpStatus.NOT_FOUND)
+					.data(null)
+					.message("Không tìm thấy thông tin cài đặt người dùng")
+					.build());
+		}
+		return ResponseEntity.ok(ResponseObject.<UserSetting>builder()
+				.status(HttpStatus.OK)
+				.data(userSetting)
+				.message("Lấy thông tin cài đặt người dùng thành công")
+				.build());
+	}
+
+	@PutMapping("/{id}/settings")
+	public ResponseEntity<ResponseObject<UserSetting>> updateUserSetting(@PathVariable Long id, @RequestBody UserSetting userSetting) {
+		userSetting.setUserId(id);
+		UserSetting updatedUserSetting = userSettingService.saveOrUpdateUserSetting(userSetting);
+		return ResponseEntity.ok(ResponseObject.<UserSetting>builder()
+				.status(HttpStatus.OK)
+				.data(updatedUserSetting)
+				.message("Cập nhật cài đặt người dùng thành công")
+				.build());
+	}
 }

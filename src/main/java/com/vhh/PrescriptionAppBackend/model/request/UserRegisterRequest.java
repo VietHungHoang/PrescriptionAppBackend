@@ -40,4 +40,6 @@ public class UserRegisterRequest {
     @JsonProperty("role_id")
     @NotNull(message = "Role id is required")
     private Long roleId;
+    private Long countryId; // Thêm trường này
+
 }

@@ -1,7 +1,7 @@
 package com.vhh.PrescriptionAppBackend.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -23,12 +23,15 @@ public class Section {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @JsonProperty("section_title")
     private String title;
+
     @Column(columnDefinition = "TEXT")
     private String content;
+
     @ManyToOne
     @JoinColumn(name = "drug_id")
+    @JsonBackReference
     private Drug drug;
-
 }

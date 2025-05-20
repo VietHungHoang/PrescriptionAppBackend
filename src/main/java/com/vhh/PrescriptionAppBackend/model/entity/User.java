@@ -1,30 +1,21 @@
 package com.vhh.PrescriptionAppBackend.model.entity;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.cglib.core.Local;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
@@ -67,6 +58,9 @@ public class User extends BaseEntity implements UserDetails {
     private Country country;
 
     private String photoUrl;
+    @JsonManagedReference
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private UserSetting userSetting;  // Thêm quan hệ với UserSetting
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
