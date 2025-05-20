@@ -56,38 +56,45 @@ public class JwtTokenFilter extends OncePerRequestFilter {
         if (email != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             User userDetails = (User) userDetailsService.loadUserByUsername(email);
             if (jwtUtils.validateToken(token, userDetails)) {
-                UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
-                        userDetails,
-                        null,
-                        userDetails.getAuthorities());
+                // UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(
+                //         userDetails,
+                //         null,
+                //         userDetails.getAuthorities());
 
-                authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                SecurityContextHolder.getContext().setAuthentication(authenticationToken);
+                // authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                // SecurityContextHolder.getContext().setAuthentication(authenticationToken);
             }
         }
         filterChain.doFilter(request, response);
     }
 
     private Boolean isBypassToken(@NotNull HttpServletRequest request) {
-        final List<Pair<String, String>> bypassTokens = Arrays.asList(
-                Pair.of(apiPrefix + "/users/register", "POST"),
-                Pair.of(apiPrefix + "/users/login", "POST"), 
-                Pair.of(apiPrefix + "/**", "POST"),
-                Pair.of(apiPrefix + "/**", "GET"),
-                Pair.of(apiPrefix + "/**", "PUT"));
+    final List<Pair<String, String>> bypassTokens = Arrays.asList(
+            Pair.of(apiPrefix + "/users/register", "POST"),
+            Pair.of(apiPrefix + "/users/login", "POST"),
+            Pair.of(apiPrefix + "/**", "POST"),
+            Pair.of(apiPrefix + "/**", "GET"),
+            Pair.of(apiPrefix + "/**", "PUT")
+    );
 
-        String requestPath = request.getServletPath();
-        String requestMethod = request.getMethod();
+    String requestPath = request.getServletPath();
+    String requestMethod = request.getMethod();
 
-        for (Pair<String, String> token : bypassTokens) {
-            String path = token.getFirst();
-            String method = token.getSecond();
-
-            if (requestPath.matches(path.replace("**", ".*")) && requestMethod.equalsIgnoreCase(method)) {
-                return true;
-            }
-        }
+    // Nếu là /users/check-token thì không bypass
+    if ((apiPrefix + "/users/check-token").equals(requestPath)) {
         return false;
     }
+
+    for (Pair<String, String> token : bypassTokens) {
+        String path = token.getFirst();
+        String method = token.getSecond();
+
+        if (requestPath.matches(path.replace("**", ".*")) && requestMethod.equalsIgnoreCase(method)) {
+            return true;
+        }
+    }
+    return false;
+}
+
 
 }

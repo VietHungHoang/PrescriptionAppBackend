@@ -48,14 +48,14 @@ public class UserService implements IUserService {
         if (userRepository.existsByEmail(email)) {
             throw new DataIntegrityViolationException("Địa chỉ email đã tồn tại.");
         }
-        Role role = roleRepository.findById(userDTO.getRoleId())
-                .orElseThrow(() -> new DataNotFoundException("Role Id không tồn tại"));
+        // Role role = roleRepository.findById(userDTO.getRoleId())
+        //         .orElseThrow(() -> new DataNotFoundException("Role Id không tồn tại"));
 
-        Country country = countryRepository.findById(userDTO.getCountryId())
-                .orElseThrow(() -> new DataNotFoundException("Country Id không tồn tại"));
+        // Country country = countryRepository.findById(userDTO.getCountryId())
+        //         .orElseThrow(() -> new DataNotFoundException("Country Id không tồn tại"));
         User newUser = UserMapper.convertToEntity(userDTO);
-        newUser.setRole(role);
-        newUser.setCountry(country);
+        newUser.setRole(null);
+        newUser.setCountry(null);
         return userRepository.save(newUser);
     }
 
@@ -119,12 +119,12 @@ public class UserService implements IUserService {
     public String googleLogin(String email, String googleAccountId, String name) throws Exception {
         Optional<User> optionalUser = userRepository.findByEmail(email);
         if (optionalUser.isEmpty()) {
-            Role role = roleRepository.findById(1L).get();
+            // Role role = roleRepository.findById(1L).get();
             User newUser = User.builder()
                     .email(email)
                     .name(name)
                     .googleAccountId(googleAccountId)
-                    .role(role)
+                    .role(null)
                     .build();
             return jwtUtils.generateToken(userRepository.save(newUser));
         }

@@ -32,11 +32,12 @@ public class GoogleAuthResponse {
         return res;
     }
 
-        public static GoogleAuthResponse registerSuccess(String token, String refreshToken) {
+        public static GoogleAuthResponse registerSuccess(String token, String refreshToken, String name) {
         GoogleAuthResponse res = new GoogleAuthResponse();
         res.setStatus("LOGIN_SUCCESS");
         res.setToken(token);
         res.setRefreshToken(refreshToken);
+        res.setName(name);
         return res;
     }
 
