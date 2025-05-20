@@ -1,7 +1,5 @@
 package com.vhh.PrescriptionAppBackend.model.entity;
 
-import java.time.LocalTime;
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
@@ -16,17 +14,16 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "time_dosages")
+@Table(name = "dosages")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TimeDosage {
+public class Dosage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LocalTime time;
     private double dosage;
 
     @ManyToOne

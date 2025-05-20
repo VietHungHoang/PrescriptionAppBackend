@@ -1,12 +1,10 @@
 package com.vhh.PrescriptionAppBackend.model.entity;
 
-import java.sql.Date;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import org.springframework.cglib.core.Local;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,6 +16,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -67,6 +66,10 @@ public class User extends BaseEntity implements UserDetails {
     private Country country;
 
     private String photoUrl;
+
+    // Thêm mối quan hệ với Prescription (Một User có thể có nhiều Prescription)
+    @OneToMany(mappedBy = "user")
+    private List<Prescription> prescriptions;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

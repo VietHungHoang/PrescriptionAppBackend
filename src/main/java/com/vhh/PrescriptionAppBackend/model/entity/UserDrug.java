@@ -33,7 +33,7 @@ public class UserDrug extends BaseEntity {
 
     @ManyToOne
     @JoinColumn(name = "time_dosage_id")
-    private TimeDosage timeDosage;
+    private Dosage timeDosage;
 
     @Enumerated(EnumType.STRING)
     private UseDrugStatus status;
