@@ -174,8 +174,9 @@ public class UserController {
 				}
 
 				String token = jwtUtils.generateToken(user);
+				GoogleAuthResponse res = GoogleAuthResponse.builder().name(user.getName()).token(token).status("LOGIN_SUCCESS").build();
 				// log.info("Google Login successful for user: {}", email);
-				return ResponseEntity.ok(GoogleAuthResponse.loginSuccess(token));
+				return ResponseEntity.ok(res);
 
 			} else {
 				// User does not exist - Registration Required Flow
