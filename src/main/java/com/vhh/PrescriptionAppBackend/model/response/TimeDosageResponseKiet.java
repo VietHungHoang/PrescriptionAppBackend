@@ -2,9 +2,9 @@ package com.vhh.PrescriptionAppBackend.model.response;
 
 import java.util.List;
 
-public class TimeDosageResponse {
+public class TimeDosageResponseKiet {
     private String time;
-    private List<DrugResponse> drugs;
+    private List<DrugResponseKiet> drugs;
     private Long id;
     private int status;
     private boolean editted;
@@ -40,11 +40,11 @@ public class TimeDosageResponse {
         this.time = time;
     }
 
-    public List<DrugResponse> getDrugs() {
+    public List<DrugResponseKiet> getDrugs() {
         return drugs;
     }
 
-    public void setDrugs(List<DrugResponse> drugs) {
+    public void setDrugs(List<DrugResponseKiet> drugs) {
         this.drugs = drugs;
     }
 }

@@ -1,4 +1,4 @@
-package com.vhh.PrescriptionAppBackend.repository;
+package com.vhh.PrescriptionAppBackend.repository.kiet;
 
 import com.vhh.PrescriptionAppBackend.model.entity.Prescription;
 import org.springframework.data.jpa.repository.JpaRepository;

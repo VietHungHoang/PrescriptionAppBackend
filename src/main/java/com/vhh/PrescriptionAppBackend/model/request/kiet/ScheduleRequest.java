@@ -1,4 +1,4 @@
-package com.vhh.PrescriptionAppBackend.model.request;
+package com.vhh.PrescriptionAppBackend.model.request.kiet;
 
 import lombok.Data;
 

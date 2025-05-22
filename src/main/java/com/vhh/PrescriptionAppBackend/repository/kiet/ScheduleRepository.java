@@ -1,4 +1,4 @@
-package com.vhh.PrescriptionAppBackend.repository;
+package com.vhh.PrescriptionAppBackend.repository.kiet;
 
 import com.vhh.PrescriptionAppBackend.model.entity.Schedule;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -6,7 +6,6 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
-import java.sql.Date;
 import java.util.List;
 
 @Repository

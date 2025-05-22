@@ -1,17 +1,17 @@
-package com.vhh.PrescriptionAppBackend.controller;
+package com.vhh.PrescriptionAppBackend.controller.kiet;
 
 import com.vhh.PrescriptionAppBackend.exception.UnauthorizedException;
-import com.vhh.PrescriptionAppBackend.model.request.ScheduleRequest;
-import com.vhh.PrescriptionAppBackend.model.request.StatusUpdateRequest;
-import com.vhh.PrescriptionAppBackend.model.response.ScheduleResponse;
-import com.vhh.PrescriptionAppBackend.model.response.StatusUpdateResponse;
-import com.vhh.PrescriptionAppBackend.service.schedule.ScheduleService;
+import com.vhh.PrescriptionAppBackend.model.request.kiet.ScheduleRequest;
+import com.vhh.PrescriptionAppBackend.model.request.kiet.StatusUpdateRequest;
+import com.vhh.PrescriptionAppBackend.model.response.ScheduleResponseKiet;
+import com.vhh.PrescriptionAppBackend.model.response.StatusUpdateResponseKiet;
+import com.vhh.PrescriptionAppBackend.service.schedule.ScheduleServiceKiet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-import java.sql.Date;
+
 import java.time.LocalDate;
 import java.util.List;
 
@@ -20,11 +20,11 @@ import java.util.List;
 public class ScheduleController {
 
     @Autowired
-    private ScheduleService scheduleService;
+    private ScheduleServiceKiet scheduleServiceKiet;
 
     // API lấy lịch uống thuốc theo ngày
     @GetMapping("/getScheduleByDate")
-    public ScheduleResponse getScheduleByDate(@RequestParam String date) {
+    public ScheduleResponseKiet getScheduleByDate(@RequestParam String date) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = 1L; // default userId for testing
 
@@ -48,14 +48,14 @@ public class ScheduleController {
         scheduleRequest.setDate(sqlDate);
         scheduleRequest.setUserId(userId);  // Gán userId vào đây
 
-        return scheduleService.getScheduleByDate(scheduleRequest);
+        return scheduleServiceKiet.getScheduleByDate(scheduleRequest);
     }
 
 
 
 
     @PostMapping("/update-status")
-    public ResponseEntity<StatusUpdateResponse> updateMedicineStatus(@RequestBody StatusUpdateRequest request) {
+    public ResponseEntity<StatusUpdateResponseKiet> updateMedicineStatus(@RequestBody StatusUpdateRequest request) {
         // Lấy thông tin người dùng từ SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = 1L; // Đặt giá trị mặc định cho userId là 1 nếu người dùng chưa đăng nhập
@@ -71,21 +71,21 @@ public class ScheduleController {
         }
 
         // Log dữ liệu nhận được từ frontend
-        System.out.println("Received request with defaultTime: " + request.getDefaultTime()
+        System.out.println("Received request with defaultTime: " + request.getId()
                 + ", selectedTime: " + request.getSelectedTime()
                 + ", status: " + request.getStatus());
 
         // Tiến hành xử lý và gọi service với dữ liệu đã được xác thực
         try {
-            StatusUpdateResponse response = scheduleService.updateMedicineStatus(request, userId);
+            StatusUpdateResponseKiet response = scheduleServiceKiet.updateMedicineStatus(request, userId);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
             // Log lỗi chi tiết
-            return ResponseEntity.badRequest().body(new StatusUpdateResponse(0, "Error: " + e.getMessage()));
+            return ResponseEntity.badRequest().body(new StatusUpdateResponseKiet(0, "Error: " + e.getMessage()));
         }
     }
     @GetMapping("/getHistory")
-    public ResponseEntity<List<ScheduleResponse>> getHistoryDates() {
+    public ResponseEntity<List<ScheduleResponseKiet>> getHistoryDates() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         Long userId = 1L; // default userId for testing
 
@@ -97,7 +97,7 @@ public class ScheduleController {
             }
         }
 
-        List<ScheduleResponse> history = scheduleService.getHistoryByUserId(userId);
+        List<ScheduleResponseKiet> history = scheduleServiceKiet.getHistoryByUserId(userId);
         return ResponseEntity.ok(history);
     }
 }

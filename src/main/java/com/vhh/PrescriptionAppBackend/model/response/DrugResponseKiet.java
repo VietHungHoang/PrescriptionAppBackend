@@ -1,6 +1,6 @@
 package com.vhh.PrescriptionAppBackend.model.response;
 
-public class DrugResponse {
+public class DrugResponseKiet {
     private String name;
     private double dosage;
     private String unit;

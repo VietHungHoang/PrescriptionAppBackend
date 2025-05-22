@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class PrescriptionResponse {
+public class PrescriptionResponseKiet {
     private Long id;
     private String name;
     private String hospital;
@@ -18,5 +18,5 @@ public class PrescriptionResponse {
     private LocalDate consultationDate;
     private LocalDate followUpDate;
     private Integer status;
-    private List<DrugInPrescriptionResponse> drugs;
+    private List<DrugInPrescriptionResponseKiet> drugs;
 }

@@ -1,8 +1,8 @@
-package com.vhh.PrescriptionAppBackend.controller;
+package com.vhh.PrescriptionAppBackend.controller.kiet;
 
 import com.vhh.PrescriptionAppBackend.exception.UnauthorizedException;
-import com.vhh.PrescriptionAppBackend.model.response.PrescriptionResponse;
-import com.vhh.PrescriptionAppBackend.service.prescription.PrescriptionService;
+import com.vhh.PrescriptionAppBackend.model.response.PrescriptionResponseKiet;
+import com.vhh.PrescriptionAppBackend.service.prescription.PrescriptionServiceKiet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -16,7 +16,7 @@ import java.util.List;
 public class PrescriptionController {
 
     @Autowired
-    private PrescriptionService prescriptionService;
+    private PrescriptionServiceKiet prescriptionServiceKiet;
 
     /**
      * API lấy danh sách đơn thuốc theo trạng thái (0 hoặc 1)
@@ -24,7 +24,7 @@ public class PrescriptionController {
      * @return danh sách PrescriptionResponse
      */
     @GetMapping("/getByStatus")
-    public ResponseEntity<List<PrescriptionResponse>> getPrescriptionsByStatus(@RequestParam int status) {
+    public ResponseEntity<List<PrescriptionResponseKiet>> getPrescriptionsByStatus(@RequestParam int status) {
         // Validate status đầu vào
         if (status != 0 && status != 1) {
             return ResponseEntity.badRequest().build();
@@ -41,7 +41,7 @@ public class PrescriptionController {
             }
         }
 
-        List<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByUserIdAndStatus(userId, status);
+        List<PrescriptionResponseKiet> prescriptions = prescriptionServiceKiet.getPrescriptionsByUserIdAndStatus(userId, status);
         return ResponseEntity.ok(prescriptions);
     }
 }

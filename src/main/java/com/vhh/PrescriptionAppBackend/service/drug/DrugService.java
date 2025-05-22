@@ -2,14 +2,11 @@ package com.vhh.PrescriptionAppBackend.service.drug;
 
 import java.util.List;
 
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 
 import com.vhh.PrescriptionAppBackend.model.entity.Drug;
-import com.vhh.PrescriptionAppBackend.model.response.DrugNameResponse;
-import com.vhh.PrescriptionAppBackend.repository.DrugRepository;
+import com.vhh.PrescriptionAppBackend.model.response.DrugNameResponseKiet;
+import com.vhh.PrescriptionAppBackend.repository.kiet.DrugRepository;
 
 import lombok.RequiredArgsConstructor;
 
@@ -19,7 +16,7 @@ public class DrugService implements IDrugService {
     private final DrugRepository drugRepository;
 
     @Override
-    public List<DrugNameResponse> findAllSimple() {
+    public List<DrugNameResponseKiet> findAllSimple() {
         return this.drugRepository.findAllSimple();
     }
     @Override

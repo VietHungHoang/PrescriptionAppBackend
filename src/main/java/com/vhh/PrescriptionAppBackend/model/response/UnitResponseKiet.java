@@ -5,9 +5,9 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class DrugNameResponse {
+@AllArgsConstructor
+public class UnitResponseKiet {
     private Long id;
     private String name;
 }
