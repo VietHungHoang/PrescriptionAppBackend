@@ -4,7 +4,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import com.vhh.PrescriptionAppBackend.model.request.ScheduleAddRequest;
-import com.vhh.PrescriptionAppBackend.model.request.ScheduleRequest;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;

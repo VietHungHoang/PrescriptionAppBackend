@@ -1,11 +1,11 @@
 package com.vhh.PrescriptionAppBackend.model.response;
 
-public class StatusUpdateResponse {
+public class StatusUpdateResponseKiet {
 
     private int status;  // Trạng thái sau khi xử lý
     private String message;  // Thông báo
 
-    public StatusUpdateResponse(int status, String message) {
+    public StatusUpdateResponseKiet(int status, String message) {
         this.status = status;
         this.message = message;
     }

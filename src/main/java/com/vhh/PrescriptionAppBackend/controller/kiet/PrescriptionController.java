@@ -1,4 +1,9 @@
-package com.vhh.PrescriptionAppBackend.controller;
+package com.vhh.PrescriptionAppBackend.controller.kiet;
+
+import com.vhh.PrescriptionAppBackend.exception.UnauthorizedException;
+import com.vhh.PrescriptionAppBackend.model.response.PrescriptionResponseKiet;
+import com.vhh.PrescriptionAppBackend.model.response.ResponseObject;
+import com.vhh.PrescriptionAppBackend.service.prescription.PrescriptionServiceKiet;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,10 +24,6 @@ import com.vhh.PrescriptionAppBackend.model.entity.Unit;
 import com.vhh.PrescriptionAppBackend.model.entity.User;
 import com.vhh.PrescriptionAppBackend.model.request.DrugInPresRequest;
 import com.vhh.PrescriptionAppBackend.model.request.PrescriptionRequest;
-import com.vhh.PrescriptionAppBackend.model.response.DrugNameResponse;
-import com.vhh.PrescriptionAppBackend.model.response.PrescriptionResponse;
-import com.vhh.PrescriptionAppBackend.model.response.ResponseObject;
-import com.vhh.PrescriptionAppBackend.service.drug.IDrugService;
 import com.vhh.PrescriptionAppBackend.service.prescription.IPrescriptionService;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
@@ -75,7 +76,7 @@ public class PrescriptionController {
      * @return danh sách PrescriptionResponse
      */
     @GetMapping("/getByStatus")
-    public ResponseEntity<List<PrescriptionResponse>> getPrescriptionsByStatus(@RequestParam int status) {
+    public ResponseEntity<List<PrescriptionResponseKiet>> getPrescriptionsByStatus(@RequestParam int status) {
         // Validate status đầu vào
         if (status != 0 && status != 1) {
             return ResponseEntity.badRequest().build();
@@ -92,7 +93,7 @@ public class PrescriptionController {
             }
         }
 
-        List<PrescriptionResponse> prescriptions = prescriptionService.getPrescriptionsByUserIdAndStatus(userId, status);
+        List<PrescriptionResponseKiet> prescriptions = prescriptionService.getPrescriptionsByUserIdAndStatus(userId, status);
         return ResponseEntity.ok(prescriptions);
     }
 

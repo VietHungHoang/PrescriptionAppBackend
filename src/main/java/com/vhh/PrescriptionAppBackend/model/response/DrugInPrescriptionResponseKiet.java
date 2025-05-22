@@ -9,9 +9,9 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DrugInPrescriptionResponse {
+public class DrugInPrescriptionResponseKiet {
     private String drugName;
     private String unitName;
-    private List<DosageResponse> dosages;
-    private List<ScheduleResponse> schedules;
+    private List<DosageResponseKiet> dosages;
+    private List<ScheduleResponseKiet> schedules;
 }

@@ -7,6 +7,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class DosageResponse {
+public class DosageResponseKiet {
     private double dosage;
 }
