@@ -195,18 +195,27 @@ public class UserController {
 		}
 	}
 
-	
-		@GetMapping("/me")
-		public ResponseEntity<ResponseObject<String>> checkToken() {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			String name = authentication.getName();
+
+	@GetMapping("/me")
+	public ResponseEntity<ResponseObject<String>> checkToken() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		String name = authentication.getName();
+		if(name == "anonymousUser") {
 			ResponseObject<String> response = ResponseObject.<String>builder()
-			.status(HttpStatus.OK)
-			.message("Token is valid")
-			.data(name)
-			.build();
+					.status(HttpStatus.BAD_REQUEST)
+					.message("Token is valid")
+					.data(null)
+					.build();
+			return new ResponseEntity<>(response, response.getStatus());
+		} else {
+			ResponseObject<String> response = ResponseObject.<String>builder()
+					.status(HttpStatus.OK)
+					.message("Token is valid")
+					.data(name)
+					.build();
 			return ResponseEntity.ok(response);
 		}
+	}
 
 // <======================================================== Đăng ========================================================>
 
@@ -248,7 +257,10 @@ public class UserController {
 
 	@PutMapping("/{id}/settings")
 	public ResponseEntity<ResponseObject<UserSetting>> updateUserSetting(@PathVariable Long id, @RequestBody UserSetting userSetting) {
-		userSetting.setUserId(id);
+		User user = new User();
+		user.setId(id);
+		userSetting.setUser(user);  // Gán đối tượng User có id = id
+
 		UserSetting updatedUserSetting = userSettingService.saveOrUpdateUserSetting(userSetting);
 		return ResponseEntity.ok(ResponseObject.<UserSetting>builder()
 				.status(HttpStatus.OK)
@@ -256,4 +268,5 @@ public class UserController {
 				.message("Cập nhật cài đặt người dùng thành công")
 				.build());
 	}
+
 }

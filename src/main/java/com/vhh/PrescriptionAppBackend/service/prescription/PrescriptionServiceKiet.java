@@ -24,10 +24,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PrescriptionServiceKiet {
+public class PrescriptionServiceKiet implements IPrescriptionService{
 
     @Autowired
     private PrescriptionRepository prescriptionRepository;
+
+    @Override
+    public void save(Prescription prescription) {
+
+    }
 
     public List<PrescriptionResponseKiet> getPrescriptionsByUserIdAndStatus(Long userId, int status) {
         List<Prescription> prescriptions = prescriptionRepository.findByUserIdAndStatus(userId, status);

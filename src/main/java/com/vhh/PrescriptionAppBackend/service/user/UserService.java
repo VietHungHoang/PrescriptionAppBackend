@@ -201,7 +201,7 @@ public class UserService implements IUserService {
             userSettingService.saveOrUpdateUserSetting(updatedUser.getUserSetting());
         } else {
             UserSetting userSetting = new UserSetting(
-                    user.getId(),
+                    updatedUser,
                     user.getName(),
                     user.getDateOfBirth() != null ? user.getDateOfBirth().toString() : null,
                     user.getPhoneNumber(),

@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+
 @Entity
 @Table(name = "usersetting")
 @NoArgsConstructor
@@ -15,12 +16,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Data
 @Builder
 public class UserSetting {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @Column(name = "user_id")
-    private Long userId;
 
     @Column(name = "name")
     private String name;
@@ -47,13 +46,13 @@ public class UserSetting {
     private LocalDateTime updatedAt;
 
     @OneToOne
-    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    @JoinColumn(name = "user_id", nullable = false)
     @JsonBackReference
     private User user;
 
-    // Constructor mới để hỗ trợ null cho weight và height
-    public UserSetting(Long userId, String name, String dateOfBirth, String phoneNumber, String gender, Double weight, Double height) {
-        this.userId = userId;
+    // Constructor hỗ trợ tạo mới
+    public UserSetting(User user, String name, String dateOfBirth, String phoneNumber, String gender, Double weight, Double height) {
+        this.user = user;
         this.name = name;
         this.dateOfBirth = dateOfBirth;
         this.phoneNumber = phoneNumber;
