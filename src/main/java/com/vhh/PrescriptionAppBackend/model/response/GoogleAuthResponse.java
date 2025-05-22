@@ -25,10 +25,11 @@ public class GoogleAuthResponse {
     private String refreshToken;
 
     // Static factory methods for convenience
-    public static GoogleAuthResponse loginSuccess(String token) {
+    public static GoogleAuthResponse loginSuccess(String token, String name) {
         GoogleAuthResponse res = new GoogleAuthResponse();
         res.setStatus("LOGIN_SUCCESS");
         res.setToken(token);
+        res.setName(name);
         return res;
     }
 

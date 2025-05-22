@@ -10,10 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.vhh.PrescriptionAppBackend.exception.UnauthorizedException;
+import com.vhh.PrescriptionAppBackend.model.entity.Dosage;
 import com.vhh.PrescriptionAppBackend.model.entity.Drug;
 import com.vhh.PrescriptionAppBackend.model.entity.DrugInPrescription;
 import com.vhh.PrescriptionAppBackend.model.entity.Prescription;
 import com.vhh.PrescriptionAppBackend.model.entity.Schedule;
+import com.vhh.PrescriptionAppBackend.model.entity.Unit;
+import com.vhh.PrescriptionAppBackend.model.entity.User;
 import com.vhh.PrescriptionAppBackend.model.request.DrugInPresRequest;
 import com.vhh.PrescriptionAppBackend.model.request.PrescriptionRequest;
 import com.vhh.PrescriptionAppBackend.model.response.DrugNameResponse;
@@ -37,7 +40,9 @@ public class PrescriptionController {
 			.name(prescriptionRequest.getName())
 			.doctorName(prescriptionRequest.getDoctorName())
 			.hospital(prescriptionRequest.getHospital())
-			.build();
+			.user(User.builder().id(10L).build())
+			.status(0)
+						.build();
 		
 		// prescription.setConsultationDate(prescriptionRequest.getConsultationDate());
 		// prescription.setFollowUpDate(prescriptionRequest.getFollowUpDate());
@@ -45,11 +50,16 @@ public class PrescriptionController {
 		for(DrugInPresRequest drugInPresRequest : prescriptionRequest.getDrugs()) {
 			DrugInPrescription drugInPrescription = DrugInPrescription.builder()
 			.drug(Drug.builder().id(drugInPresRequest.getDrugId()).build())
+			.unit(Unit.builder().id(drugInPresRequest.getUnitId()).build())
 			.prescription(prescription)
 			.build();
 			List<Schedule> scheduleList = drugInPresRequest.getSchedules().stream()
 				.map(Schedule::responseToEntity)
 				.collect(Collectors.toList());
+			for(Schedule x : scheduleList) {
+				x.setDrugInPrescription(drugInPrescription);
+				x.setTimeDosage(Dosage.builder().dosage(drugInPresRequest.getSchedules().get(0).getDosage()).build());
+			}
 			
 			drugInPrescription.setSchedules(scheduleList);
 			drugInPrescriptionList.add(drugInPrescription);
@@ -72,7 +82,7 @@ public class PrescriptionController {
         }
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = 1L; // default userId cho test nếu chưa đăng nhập
+        Long userId = 10L; // default userId cho test nếu chưa đăng nhập
 
         if (authentication != null && !authentication.getName().equals("anonymousUser")) {
             try {

@@ -6,6 +6,8 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -163,8 +165,9 @@ public class UserController {
 				}
 
 				String token = jwtUtils.generateToken(user);
+				String name = (String) payload.get("name");
 				// log.info("Google Login successful for user: {}", email);
-				return ResponseEntity.ok(GoogleAuthResponse.loginSuccess(token));
+				return ResponseEntity.ok(GoogleAuthResponse.loginSuccess(token, name));
 
 			} else {
 				// User does not exist - Registration Required Flow
@@ -193,159 +196,19 @@ public class UserController {
 	}
 
 	
-		@GetMapping("/check-token")
-		public ResponseEntity<ResponseObject<Void>> checkToken() {
-			// Nếu token hợp lệ thì trả về 200 và message success
-
-			ResponseObject<Void> response = new ResponseObject<>();
-			response.setStatus(HttpStatus.OK);
-			response.setMessage("Token is valid");
-			response.setData(null);
+		@GetMapping("/me")
+		public ResponseEntity<ResponseObject<String>> checkToken() {
+			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+			String name = authentication.getName();
+			ResponseObject<String> response = ResponseObject.<String>builder()
+			.status(HttpStatus.OK)
+			.message("Token is valid")
+			.data(name)
+			.build();
 			return ResponseEntity.ok(response);
 		}
 
-
-	// public ResponseEntity<?> loginWithGoogle(@Valid @RequestBody
-	// GoogleLoginRequest loginRequest) {
-	// GoogleIdToken.Payload payload = googleTokenVerifierSercvService
-	// .verify(loginRequest.getIdToken());
-	// if (payload == null) {
-	// return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-	// .body(Map.of("error", "Invalid Google Token"));
-	// }
-
-	// // Check Nonce if the client sends up ---
-	// // if (googleRequest.getNonce() == null ||
-	// !googleVerifier.verifyNonce(payload,
-	// // googleRequest.getNonce())) {
-	// // logger.warn("Nonce verification failed for Google token.");
-	// // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error",
-	// // "Invalid Nonce"));
-	// // }
-
-	// String googleUserId = payload.getSubject();
-	// String email = payload.getEmail();
-	// String name = (String) payload.get("name");
-	// // String pictureUrl = (String) payload.get("picture");
-
-	// String token = userService.googleLogin(email, googleUserId, name);
-	// User user = userService.getUserDetailFromToken(token);
-	// Token jwtToken = tokenService.addToken(user, token);
-	// LoginResponse loginResponse = LoginResponse.builder()
-	// .message("Login successfully")
-	// .token(jwtToken.getToken())
-	// .tokenType(jwtToken.getTokenType())
-	// .refreshToken(jwtToken.getRefreshToken())
-	// .id(user.getId())
-	// .username(user.getUsername())
-	// .roles(user.getAuthorities().stream().map(item ->
-	// item.getAuthority()).toList())
-	// .build();
-
-	// return ResponseEntity.ok().body(ResponseObject.<LoginResponse>builder()
-	// .message("Đăng nhập thành công")
-	// .data(loginResponse)
-	// .status(HttpStatus.OK)
-	// .build());
-
-	// if (!emailVerified) {
-	// // Quyết định xem có cho phép đăng nhập với email chưa xác thực không
-	// // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error",
-	// // "Google email not verified"));
-	// }
-
-	// // Tìm hoặc tạo user trong DB
-	// // User user = userService.findOrCreateUser("google", googleUserId, email,
-	// // name);
-
-	// // // Tạo JWT tùy chỉnh của bạn
-	// // String jwt = tokenProvider.generateToken(user.getId().toString(),
-	// // user.getEmail());
-
-	// // logger.info("Google authentication successful. Generated custom JWT for
-	// user
-	// // ID: {}", user.getId());
-	// // return ResponseEntity.ok(new AuthResponse(jwt, user.getId(),
-	// user.getEmail(),
-	// // user.getDisplayName()));
-
-	// // Cách 1: Lấy thông tin từ Authentication object
-	// // String username = authentication.getName(); // Thường là 'sub' claim
-	// (Google
-	// // ID)
-
-	// // // Cách 2: Lấy thông tin trực tiếp từ Jwt Principal (chi tiết hơn)
-	// // String googleUserId = jwtPrincipal.getSubject(); // 'sub' claim
-	// // String email = jwtPrincipal.getClaimAsString("email");
-	// // String name = jwtPrincipal.getClaimAsString("name");
-	// // String picture = jwtPrincipal.getClaimAsString("picture");
-	// // String issuer = jwtPrincipal.getIssuer().toString();
-	// // java.util.List<String> audience = jwtPrincipal.getAudience();
-	// // String nonce = jwtPrincipal.getClaimAsString("nonce"); // Lấy Nonce nếu có
-
-	// // System.out.println("Authenticated user (from Authentication): " +
-	// username);
-	// // System.out.println("Authenticated user (from Jwt): ID=" + googleUserId +
-	// ",
-	// // Email=" + email
-	// // + ", Name=" + name);
-	// // System.out.println("Token Issuer: " + issuer);
-	// // System.out.println("Token Audience: " + audience);
-	// // System.out.println("Token Nonce: " + nonce);
-
-	// // --- QUAN TRỌNG: Xử lý Nonce thủ công (nếu cần) ---
-	// // Spring Security Resource Server không tự kiểm tra nonce.
-	// // Bạn cần lấy nonce đã lưu trước đó cho request này và so sánh.
-	// // String expectedNonce = getNonceForThisRequest();
-	// // if (expectedNonce == null || !expectedNonce.equals(nonce)) {
-	// // System.err.println("Nonce mismatch or missing!");
-	// // return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Map.of("error",
-	// // "Invalid nonce"));
-	// // }
-	// // System.out.println("Nonce verified successfully!");
-	// // --- Kết thúc kiểm tra Nonce ---
-
-	// // TODO: Logic tìm hoặc tạo user trong DB của bạn dựa trên googleUserId hoặc
-	// // email
-	// // User user = userService.findOrCreateUser(googleUserId, email, name,
-	// picture);
-
-	// // Tạo response trả về cho client
-	// // Map<String, Object> responseBody = new HashMap<>();
-	// // responseBody.put("message", "Authentication successful via Spring
-	// Security");
-	// // responseBody.put("userId", googleUserId);
-	// // responseBody.put("email", email);
-	// // responseBody.put("name", name);
-	// // responseBody.put("appToken", yourGeneratedAppToken); // Có thể tạo token
-	// của
-	// // riêng bạn ở đây
-
-	// return ResponseEntity.ok(null);
-	// }
-
-	// (Nếu dùng Nonce) Hàm giả lập lấy nonce đã lưu
-	// private String getNonceForThisRequest() { ... }
-	// private String getNonceForThisRequest() {
-	// // Implement logic để lấy nonce bạn đã tạo và gửi cho client trước đó
-	// // Ví dụ: Lấy từ session, hoặc từ một cơ chế lưu trữ tạm thời khác
-	// return "your_generated_and_stored_nonce";
-	// }
-
-	// --- Ví dụ DTO (Data Transfer Object) ---
-	/*
-	 * class GoogleTokenRequest {
-	 * private String idToken;
-	 * // Getters and Setters
-	 * }
-	 * 
-	 * class AuthResponse {
-	 * private String accessToken;
-	 * private String email;
-	 * private String name;
-	 * // Constructor, Getters and Setters
-	 * }
-	 */
+// <======================================================== Đăng ========================================================>
 
 	@PutMapping("/{id}")
 	public ResponseEntity<ResponseObject<UserResponse>> updateUser(@PathVariable Long id, @RequestBody User user) {

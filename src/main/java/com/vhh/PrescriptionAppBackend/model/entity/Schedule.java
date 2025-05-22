@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 import com.vhh.PrescriptionAppBackend.model.request.ScheduleAddRequest;
 import com.vhh.PrescriptionAppBackend.model.request.ScheduleRequest;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -36,13 +37,13 @@ public class Schedule extends BaseEntity{
     @JoinColumn(name="drug_in_pres_id")
     DrugInPrescription drugInPrescription;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL) // hoặc CascadeType.ALL
     @JoinColumn(name="time_dosage_id")
     Dosage timeDosage;
 
     public static Schedule responseToEntity(ScheduleAddRequest scheduleRequest) {
         return Schedule.builder()
-            // .date(scheduleRequest.getDate().toString())
+            .date(LocalDateTime.parse(scheduleRequest.getDate().toString()))
             .build();
     }
 }

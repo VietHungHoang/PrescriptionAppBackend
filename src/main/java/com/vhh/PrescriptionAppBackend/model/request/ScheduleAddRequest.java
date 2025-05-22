@@ -6,6 +6,6 @@ import java.util.Date;
 
 @Data
 public class ScheduleAddRequest {
-    private String data;
+    private String date;
     private Double dosage;
 }

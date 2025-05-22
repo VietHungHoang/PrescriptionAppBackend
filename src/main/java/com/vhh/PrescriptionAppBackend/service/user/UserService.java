@@ -117,7 +117,7 @@ public class UserService implements IUserService {
 
     @Override
     public String googleLogin(String email, String googleAccountId, String name) throws Exception {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+        Optional<User> optionalUser = userRepository.findByEmail(email); 
         if (optionalUser.isEmpty()) {
             // Role role = roleRepository.findById(1L).get();
             User newUser = User.builder()
@@ -157,8 +157,14 @@ public class UserService implements IUserService {
 
     @Override
     public Optional<User> findByEmail(String email) throws Exception {
-        Optional<User> optionalUser = userRepository.findByEmail(email);
+       try {
+         Optional<User> optionalUser = userRepository.findByEmail(email);
         return optionalUser;
+       } catch (Exception e) {
+         e.printStackTrace();
+       }
+       return null;
+       
     }
 
     @Override

@@ -26,7 +26,7 @@ public class ScheduleController {
     @GetMapping("/getScheduleByDate")
     public ScheduleResponse getScheduleByDate(@RequestParam String date) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = 1L; // default userId for testing
+        Long userId = 10L; // default userId for testing
 
         if (authentication != null && !authentication.getName().equals("anonymousUser")) {
             try {
@@ -48,7 +48,8 @@ public class ScheduleController {
         scheduleRequest.setDate(sqlDate);
         scheduleRequest.setUserId(userId);  // Gán userId vào đây
 
-        return scheduleService.getScheduleByDate(scheduleRequest);
+        ScheduleResponse res = scheduleService.getScheduleByDate(scheduleRequest);
+        return res;
     }
 
 
@@ -58,7 +59,7 @@ public class ScheduleController {
     public ResponseEntity<StatusUpdateResponse> updateMedicineStatus(@RequestBody StatusUpdateRequest request) {
         // Lấy thông tin người dùng từ SecurityContext
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = 1L; // Đặt giá trị mặc định cho userId là 1 nếu người dùng chưa đăng nhập
+        Long userId = 10L; // Đặt giá trị mặc định cho userId là 1 nếu người dùng chưa đăng nhập
 
         // Kiểm tra nếu người dùng không đăng nhập (anonymousUser)
         if (authentication != null && !authentication.getName().equals("anonymousUser")) {
@@ -87,7 +88,7 @@ public class ScheduleController {
     @GetMapping("/getHistory")
     public ResponseEntity<List<ScheduleResponse>> getHistoryDates() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        Long userId = 1L; // default userId for testing
+        Long userId = 10L; // default userId for testing
 
         if (authentication != null && !authentication.getName().equals("anonymousUser")) {
             try {
