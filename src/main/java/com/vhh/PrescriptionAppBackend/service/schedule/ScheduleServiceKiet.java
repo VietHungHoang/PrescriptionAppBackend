@@ -32,23 +32,22 @@ public class ScheduleServiceKiet {
         Long userId = Long.valueOf(scheduleRequest.getUserId());
         java.sql.Date sqlDate = (java.sql.Date) scheduleRequest.getDate();
 
-        // Lấy ngày hiện tại (không có giờ, phút, giây)
         java.sql.Date today = java.sql.Date.valueOf(LocalDate.now());
 
-        // Nếu ngày request < ngày hiện tại, trả về null hoặc response rỗng
         if (sqlDate.before(today)) {
-            // Có thể trả về null hoặc ScheduleResponse với danh sách rỗng
-
-            // hoặc
-             ScheduleResponseKiet emptyResponse = new ScheduleResponseKiet();
-             emptyResponse.setDate(sqlDate.toString());
-             emptyResponse.setTimeDosages(Collections.emptyList());
-             return emptyResponse;
+            ScheduleResponseKiet emptyResponse = new ScheduleResponseKiet();
+            emptyResponse.setDate(sqlDate.toString());
+            emptyResponse.setTimeDosages(Collections.emptyList());
+            return emptyResponse;
         }
 
         List<Schedule> schedules = scheduleRepository.findByUserIdAndDate(userId, sqlDate);
 
-        List<TimeDosageResponseKiet> timeDosageResponsKiets = schedules.stream()
+        List<Schedule> filteredSchedules = schedules.stream()
+                .filter(schedule -> schedule.getStatus() == 0)
+                .collect(Collectors.toList());
+
+        List<TimeDosageResponseKiet> timeDosageResponsKiets = filteredSchedules.stream()
                 .map(schedule -> {
                     TimeDosageResponseKiet tdr = new TimeDosageResponseKiet();
                     tdr.setId(schedule.getId());
@@ -72,6 +71,7 @@ public class ScheduleServiceKiet {
 
         return response;
     }
+
 
 
 
