@@ -7,6 +7,7 @@ import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -17,7 +18,6 @@ import com.vhh.PrescriptionAppBackend.service.country.CountryService;
 import com.vhh.PrescriptionAppBackend.service.token.GoogleTokenVerifierService;
 import com.vhh.PrescriptionAppBackend.service.token.ITokenService;
 import com.vhh.PrescriptionAppBackend.service.user.IUserService;
-import com.vhh.PrescriptionAppBackend.service.usersetting.IUserSettingService;
 
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import com.vhh.PrescriptionAppBackend.jwt.JwtUtils;
@@ -49,7 +49,6 @@ public class UserController {
 	private final CountryService countryService;
 	private final JwtUtils jwtUtils;
 	private final GoogleTokenVerifierService googleTokenVerifierService;
-	private final IUserSettingService userSettingService;
 
 	@PostMapping("/register")
 	public ResponseEntity<ResponseObject<UserResponse>> createUser(@Valid @RequestBody UserRegisterRequest userDTO,
@@ -96,7 +95,7 @@ public class UserController {
 				.refreshToken(jwtToken.getRefreshToken())
 				.id(user.getId())
 				.username(user.getUsername())
-				.roles(user.getAuthorities().stream().map(item -> item.getAuthority()).toList())
+				// .roles(user.getAuthorities().stream().map(item -> item.getAuthority()).toList())
 				.build();
 
 		return ResponseEntity.ok().body(ResponseObject.<LoginResponse>builder()
@@ -109,7 +108,7 @@ public class UserController {
 	@PostMapping("/login")
 	public ResponseEntity<ResponseObject<LoginResponse>> login(@Valid @RequestBody UserLoginRequest userDTO,
 															   HttpServletRequest request) throws Exception {
-		userDTO.setRoleId(userDTO.getRoleId() == null ? 1 : userDTO.getRoleId());
+		// userDTO.setRoleId(userDTO.getRoleId() == null ? 1 : userDTO.getRoleId());
 		String token = userService.login(userDTO);
 		User user = userService.getUserDetailFromToken(token);
 		Token jwtToken = tokenService.addToken(user, token);
@@ -120,7 +119,7 @@ public class UserController {
 				.refreshToken(jwtToken.getRefreshToken())
 				.id(user.getId())
 				.username(user.getUsername())
-				.roles(user.getAuthorities().stream().map(item -> item.getAuthority()).toList())
+				// .roles(user.getAuthorities().stream().map(item -> item.getAuthority()).toList())
 				.build();
 
 		return ResponseEntity.ok().body(ResponseObject.<LoginResponse>builder()
@@ -194,66 +193,72 @@ public class UserController {
 			}
 		}
 	}
-
 	
 		@GetMapping("/me")
-		public ResponseEntity<ResponseObject<String>> checkToken() {
-			Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-			String name = authentication.getName();
-			ResponseObject<String> response = ResponseObject.<String>builder()
-			.status(HttpStatus.OK)
-			.message("Token is valid")
-			.data(name)
-			.build();
-			return ResponseEntity.ok(response);
+		public ResponseEntity<ResponseObject<String>> checkToken(@AuthenticationPrincipal User user) {
+			if(user == null) {
+				ResponseObject<String> response = ResponseObject.<String>builder()
+				.status(HttpStatus.BAD_REQUEST)
+				.message("Token is valid")
+				.data(null)
+				.build();
+				return new ResponseEntity<>(response, response.getStatus());
+			} else {
+				ResponseObject<String> response = ResponseObject.<String>builder()
+				.status(HttpStatus.OK)
+				.message("Token is valid")
+				.data(user.getName())
+				.build();
+				return ResponseEntity.ok(response);
+			}
 		}
-
+	}
 // <======================================================== Đăng ========================================================>
 
-	@PutMapping("/{id}")
-	public ResponseEntity<ResponseObject<UserResponse>> updateUser(@PathVariable Long id, @RequestBody User user) {
-		try {
-			user.setId(id);
-			User updatedUser = userService.updateUser(user);
-			return ResponseEntity.ok(ResponseObject.<UserResponse>builder()
-					.status(HttpStatus.OK)
-					.data(UserResponse.fromUser(updatedUser))
-					.message("Cập nhật thông tin người dùng thành công")
-					.build());
-		} catch (Exception e) {
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseObject.<UserResponse>builder()
-					.status(HttpStatus.BAD_REQUEST)
-					.data(null)
-					.message(e.getMessage())
-					.build());
-		}
-	}
+// 	@PutMapping("/{id}")
+// 	public ResponseEntity<ResponseObject<UserResponse>> updateUser(@PathVariable Long id, @RequestBody User user) {
+// 		try {
+// 			user.setId(id);
+// 			User updatedUser = userService.updateUser(user);
+// 			return ResponseEntity.ok(ResponseObject.<UserResponse>builder()
+// 					.status(HttpStatus.OK)
+// 					.data(UserResponse.fromUser(updatedUser))
+// 					.message("Cập nhật thông tin người dùng thành công")
+// 					.build());
+// 		} catch (Exception e) {
+// 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ResponseObject.<UserResponse>builder()
+// 					.status(HttpStatus.BAD_REQUEST)
+// 					.data(null)
+// 					.message(e.getMessage())
+// 					.build());
+// 		}
+// 	}
 
-	@GetMapping("/{id}/settings")
-	public ResponseEntity<ResponseObject<UserSetting>> getUserSetting(@PathVariable Long id) {
-		UserSetting userSetting = userSettingService.findByUserId(id);
-		if (userSetting == null) {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseObject.<UserSetting>builder()
-					.status(HttpStatus.NOT_FOUND)
-					.data(null)
-					.message("Không tìm thấy thông tin cài đặt người dùng")
-					.build());
-		}
-		return ResponseEntity.ok(ResponseObject.<UserSetting>builder()
-				.status(HttpStatus.OK)
-				.data(userSetting)
-				.message("Lấy thông tin cài đặt người dùng thành công")
-				.build());
-	}
+// 	@GetMapping("/{id}/settings")
+// 	public ResponseEntity<ResponseObject<UserSetting>> getUserSetting(@PathVariable Long id) {
+// 		UserSetting userSetting = userSettingService.findByUserId(id);
+// 		if (userSetting == null) {
+// 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ResponseObject.<UserSetting>builder()
+// 					.status(HttpStatus.NOT_FOUND)
+// 					.data(null)
+// 					.message("Không tìm thấy thông tin cài đặt người dùng")
+// 					.build());
+// 		}
+// 		return ResponseEntity.ok(ResponseObject.<UserSetting>builder()
+// 				.status(HttpStatus.OK)
+// 				.data(userSetting)
+// 				.message("Lấy thông tin cài đặt người dùng thành công")
+// 				.build());
+// 	}
 
-	@PutMapping("/{id}/settings")
-	public ResponseEntity<ResponseObject<UserSetting>> updateUserSetting(@PathVariable Long id, @RequestBody UserSetting userSetting) {
-		userSetting.setUserId(id);
-		UserSetting updatedUserSetting = userSettingService.saveOrUpdateUserSetting(userSetting);
-		return ResponseEntity.ok(ResponseObject.<UserSetting>builder()
-				.status(HttpStatus.OK)
-				.data(updatedUserSetting)
-				.message("Cập nhật cài đặt người dùng thành công")
-				.build());
-	}
-}
+// 	@PutMapping("/{id}/settings")
+// 	public ResponseEntity<ResponseObject<UserSetting>> updateUserSetting(@PathVariable Long id, @RequestBody UserSetting userSetting) {
+// 		userSetting.setUserId(id);
+// 		UserSetting updatedUserSetting = userSettingService.saveOrUpdateUserSetting(userSetting);
+// 		return ResponseEntity.ok(ResponseObject.<UserSetting>builder()
+// 				.status(HttpStatus.OK)
+// 				.data(updatedUserSetting)
+// 				.message("Cập nhật cài đặt người dùng thành công")
+// 				.build());
+// 	}
+// }

@@ -47,8 +47,8 @@ public class DrugInPrescription extends BaseEntity{
     
     private String note;
 
-    @OneToMany(mappedBy = "drugInPrescription", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Dosage> timeDosages = new ArrayList<>();
+    // @OneToMany(mappedBy = "drugInPrescription", cascade = CascadeType.ALL, orphanRemoval = true)
+    // private List<Dosage> timeDosages = new ArrayList<>();
 
     @OneToMany(mappedBy = "drugInPrescription", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Schedule> schedules = new ArrayList<>();

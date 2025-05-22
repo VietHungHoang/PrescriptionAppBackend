@@ -3,10 +3,10 @@ package com.vhh.PrescriptionAppBackend.model.entity;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import jakarta.persistence.*;
@@ -15,7 +15,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 @Entity
 @Table(name = "users")
 @NoArgsConstructor
@@ -49,18 +48,18 @@ public class User extends BaseEntity implements UserDetails {
     @Column(name = "google_account_id")
     private String googleAccountId;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id")
-    private Role role;
+    // @ManyToOne
+    // @JoinColumn(name = "role_id")
+    // private Role role;
 
     @ManyToOne
     @JoinColumn(name = "country_id")
     private Country country;
 
     private String photoUrl;
-    @JsonManagedReference
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    private UserSetting userSetting;  // Thêm quan hệ với UserSetting
+    // @JsonManagedReference
+    // @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    // private UserSetting userSetting;  // Thêm quan hệ với UserSetting
 
     // Thêm mối quan hệ với Prescription (Một User có thể có nhiều Prescription)
     @OneToMany(mappedBy = "user")
@@ -68,9 +67,10 @@ public class User extends BaseEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
-        authorities.add(new SimpleGrantedAuthority("ROLE_" + this.role.getName().toUpperCase()));
-        return authorities;
+        // List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+        // authorities.add(new SimpleGrantedAuthority("ROLE_" + this.role.getName().toUpperCase()));
+        // return authorities;
+        return Collections.emptyList();
     }
 
     @Override
@@ -78,6 +78,25 @@ public class User extends BaseEntity implements UserDetails {
         return this.email;
     }
 
+        @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
     public User(String googleAccountId, String email, String name, String photoUrl) {
         this.googleAccountId = googleAccountId;
         this.email = email;

@@ -3,7 +3,6 @@ package com.vhh.PrescriptionAppBackend.model.response;
 import java.time.LocalDate;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.vhh.PrescriptionAppBackend.model.entity.Role;
 import com.vhh.PrescriptionAppBackend.model.entity.User;
 
 import lombok.AllArgsConstructor;
@@ -34,8 +33,8 @@ public class UserResponse {
     @JsonProperty("google_account_id")
     private String googleAccountId;
 
-    @JsonProperty("role")
-    private Role role;
+    // @JsonProperty("role")
+    // private Role role;
 
     @JsonProperty("gender")
     private String gender;
@@ -57,11 +56,8 @@ public class UserResponse {
                 .dateOfBirth(user.getDateOfBirth())
                 .facebookAccountId(user.getFacebookAccountId())
                 .googleAccountId(user.getGoogleAccountId())
-                .role(user.getRole())
                 .gender(user.getGender())
                 .phoneNumber(user.getPhoneNumber())
-                .weight(user.getUserSetting() != null ? user.getUserSetting().getWeight() : null)
-                .height(user.getUserSetting() != null ? user.getUserSetting().getHeight() : null)
                 .build();
     }
 }

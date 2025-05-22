@@ -28,7 +28,7 @@ public class Dosage {
 
     private double dosage;
 
-    @ManyToOne
-    @JoinColumn(name = "drug_in_pres_id")
-    private DrugInPrescription drugInPrescription;
+    // @ManyToOne
+    // @JoinColumn(name = "drug_in_pres_id")
+    // private DrugInPrescription drugInPrescription;
 }

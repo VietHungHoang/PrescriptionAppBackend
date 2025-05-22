@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class PrescriptionServiceKiet {
+public class PrescriptionService implements IPrescriptionService {
 
     @Autowired
     private PrescriptionRepository prescriptionRepository;
@@ -53,9 +53,9 @@ public class PrescriptionServiceKiet {
                     dipResp.setDrugName(dip.getDrug().getName());
                     dipResp.setUnitName(dip.getUnit().getName());
 
-                    dipResp.setDosages(dip.getTimeDosages().stream()
-                            .map(dosage -> new DosageResponseKiet(dosage.getDosage()))
-                            .collect(Collectors.toList()));
+                    // dipResp.setDosages(dip.getTimeDosages().stream()
+                    //         .map(dosage -> new DosageResponseKiet(dosage.getDosage()))
+                    //         .collect(Collectors.toList()));
 
                     dipResp.setSchedules(
                             dip.getSchedules().stream()
@@ -74,6 +74,12 @@ public class PrescriptionServiceKiet {
 
         response.setDrugs(drugs);
         return response;
+    }
+
+    @Override
+    public Prescription save(Prescription prescription) {
+        return prescriptionRepository.save(prescription);
+        
     }
 
 }

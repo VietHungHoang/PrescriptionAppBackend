@@ -18,15 +18,13 @@ import com.vhh.PrescriptionAppBackend.exception.ExpiredTokenException;
 import com.vhh.PrescriptionAppBackend.jwt.JwtUtils;
 import com.vhh.PrescriptionAppBackend.mapper.UserMapper;
 import com.vhh.PrescriptionAppBackend.model.entity.Country;
-import com.vhh.PrescriptionAppBackend.model.entity.Role;
 import com.vhh.PrescriptionAppBackend.model.entity.User;
 import com.vhh.PrescriptionAppBackend.model.request.CustomerRegisterGoogleRequest;
 import com.vhh.PrescriptionAppBackend.model.request.UserLoginRequest;
 import com.vhh.PrescriptionAppBackend.model.request.UserRegisterRequest;
 import com.vhh.PrescriptionAppBackend.repository.CountryRepository;
-import com.vhh.PrescriptionAppBackend.repository.RoleRepository;
+// import com.vhh.PrescriptionAppBackend.repository.RoleRepository;
 import com.vhh.PrescriptionAppBackend.repository.UserRepository;
-import com.vhh.PrescriptionAppBackend.service.usersetting.IUserSettingService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -35,12 +33,12 @@ import lombok.RequiredArgsConstructor;
 public class UserService implements IUserService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    // private final RoleRepository roleRepository;
     private final CountryRepository countryRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
     private final JwtUtils jwtUtils;
-    private final IUserSettingService userSettingService;
+    // private final IUserSettingService userSettingService;
 
     @Override
     public User createUser(CustomerRegisterGoogleRequest userDTO) throws Exception {
@@ -54,7 +52,7 @@ public class UserService implements IUserService {
         // Country country = countryRepository.findById(userDTO.getCountryId())
         //         .orElseThrow(() -> new DataNotFoundException("Country Id không tồn tại"));
         User newUser = UserMapper.convertToEntity(userDTO);
-        newUser.setRole(null);
+        // newUser.setRole(null);
         newUser.setCountry(null);
         return userRepository.save(newUser);
     }
@@ -65,13 +63,13 @@ public class UserService implements IUserService {
         if (userRepository.existsByEmail(email)) {
             throw new DataIntegrityViolationException("Địa chỉ email đã tồn tại.");
         }
-        Role role = roleRepository.findById(userDTO.getRoleId())
-                .orElseThrow(() -> new DataNotFoundException("Role Id không tồn tại"));
+        // Role role = roleRepository.findById(userDTO.getRoleId())
+        //         .orElseThrow(() -> new DataNotFoundException("Role Id không tồn tại"));
         Country country = countryRepository.findById(userDTO.getCountryId())
                 .orElseThrow(() -> new DataNotFoundException("Country Id không tồn tại"));
 
         User newUser = UserMapper.convertToEntity(userDTO);
-        newUser.setRole(role);
+        // newUser.setRole(role);
         newUser.setCountry(country);
         String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
         newUser.setPassword(encodedPassword);
@@ -124,7 +122,7 @@ public class UserService implements IUserService {
                     .email(email)
                     .name(name)
                     .googleAccountId(googleAccountId)
-                    .role(null)
+                    // .role(null)
                     .build();
             return jwtUtils.generateToken(userRepository.save(newUser));
         }
@@ -169,50 +167,51 @@ public class UserService implements IUserService {
 
     @Override
     public User updateUser(User user) throws Exception {
-        Optional<User> existingUser = userRepository.findById(user.getId());
-        if (existingUser.isEmpty()) {
-            throw new DataNotFoundException("Không tìm thấy người dùng");
-        }
+        // Optional<User> existingUser = userRepository.findById(user.getId());
+        // if (existingUser.isEmpty()) {
+        //     throw new DataNotFoundException("Không tìm thấy người dùng");
+        // }
 
-        // Validation
-        if (user.getName() == null || user.getName().isEmpty()) {
-            throw new IllegalArgumentException("Tên không được để trống");
-        }
-        if (user.getPhoneNumber() == null || user.getPhoneNumber().isEmpty()) {
-            throw new IllegalArgumentException("Số điện thoại không được để trống");
-        }
-        if (user.getGender() == null || user.getGender().isEmpty()) {
-            throw new IllegalArgumentException("Giới tính không được để trống");
-        }
+        // // Validation
+        // if (user.getName() == null || user.getName().isEmpty()) {
+        //     throw new IllegalArgumentException("Tên không được để trống");
+        // }
+        // if (user.getPhoneNumber() == null || user.getPhoneNumber().isEmpty()) {
+        //     throw new IllegalArgumentException("Số điện thoại không được để trống");
+        // }
+        // if (user.getGender() == null || user.getGender().isEmpty()) {
+        //     throw new IllegalArgumentException("Giới tính không được để trống");
+        // }
 
-        User updatedUser = existingUser.get();
-        updatedUser.setName(user.getName());
-        updatedUser.setDateOfBirth(user.getDateOfBirth());
-        updatedUser.setPhoneNumber(user.getPhoneNumber());
-        updatedUser.setGender(user.getGender());
-        updatedUser.setUpdatedAt(LocalDateTime.now());
+        // User updatedUser = existingUser.get();
+        // updatedUser.setName(user.getName());
+        // updatedUser.setDateOfBirth(user.getDateOfBirth());
+        // updatedUser.setPhoneNumber(user.getPhoneNumber());
+        // updatedUser.setGender(user.getGender());
+        // updatedUser.setUpdatedAt(LocalDateTime.now());
 
-        // Đồng bộ với UserSetting
-        if (updatedUser.getUserSetting() != null) {
-            updatedUser.getUserSetting().setName(user.getName());
-            updatedUser.getUserSetting().setDateOfBirth(user.getDateOfBirth() != null ? user.getDateOfBirth().toString() : null);
-            updatedUser.getUserSetting().setPhoneNumber(user.getPhoneNumber());
-            updatedUser.getUserSetting().setGender(user.getGender());
-            userSettingService.saveOrUpdateUserSetting(updatedUser.getUserSetting());
-        } else {
-            UserSetting userSetting = new UserSetting(
-                    user.getId(),
-                    user.getName(),
-                    user.getDateOfBirth() != null ? user.getDateOfBirth().toString() : null,
-                    user.getPhoneNumber(),
-                    user.getGender(),
-                    null,
-                    null
-            );
-            updatedUser.setUserSetting(userSetting);
-            userSettingService.saveOrUpdateUserSetting(userSetting);
-        }
+        // // Đồng bộ với UserSetting
+        // if (updatedUser.getUserSetting() != null) {
+        //     updatedUser.getUserSetting().setName(user.getName());
+        //     updatedUser.getUserSetting().setDateOfBirth(user.getDateOfBirth() != null ? user.getDateOfBirth().toString() : null);
+        //     updatedUser.getUserSetting().setPhoneNumber(user.getPhoneNumber());
+        //     updatedUser.getUserSetting().setGender(user.getGender());
+        //     userSettingService.saveOrUpdateUserSetting(updatedUser.getUserSetting());
+        // } else {
+        //     UserSetting userSetting = new UserSetting(
+        //             user.getId(),
+        //             user.getName(),
+        //             user.getDateOfBirth() != null ? user.getDateOfBirth().toString() : null,
+        //             user.getPhoneNumber(),
+        //             user.getGender(),
+        //             null,
+        //             null
+        //     );
+        //     updatedUser.setUserSetting(userSetting);
+        //     userSettingService.saveOrUpdateUserSetting(userSetting);
+        // }
 
-        return userRepository.save(updatedUser);
+        // return userRepository.save(updatedUser);
+        return null;
     }
 }

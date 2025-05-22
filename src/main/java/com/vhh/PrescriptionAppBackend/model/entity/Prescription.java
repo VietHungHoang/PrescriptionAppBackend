@@ -57,11 +57,13 @@ public class Prescription extends BaseEntity {
     private List<DrugInPrescription> drugInPrescriptions = new ArrayList<>();
 
     public void setConsultationDate(String date) {
+        if(date == null || date.isEmpty()) return;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         this.consultationDate = LocalDate.parse(date, formatter);
     }
 
     public void setFollowUpDate(String date) {
+        if(date == null || date.isEmpty()) return;
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     this.followUpDate = LocalDate.parse(date, formatter);
     }
